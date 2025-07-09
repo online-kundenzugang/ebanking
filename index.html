@@ -697,6 +697,13 @@ function ladePakete() {
   const gespeicherteBuchungen = JSON.parse(localStorage.getItem("gebuchtePakete")) || [];
   const grid = document.querySelector(".paket-grid");
   grid.innerHTML = "";
+  pakete.forEach((p, i) => {
+    p.gebucht = gespeicherteBuchungen[i] === true;
+    const istGebucht = p.gebucht;
+
+    const card = document.createElement("div");
+    card.className = "paket-card";
+    card.style = "background: #f9f9f9; border-radius: 10px; padding: 16px; border: 1px solid #ccc;";
 
   pakete.forEach((p, i) => {
     p.gebucht = gespeicherteBuchungen[i] === true;
@@ -707,7 +714,9 @@ function ladePakete() {
     card.style = "background: #f9f9f9; border-radius: 10px; padding: 16px; border: 1px solid #ccc;";
 
     const buttonText = istGebucht ? "✔ Paket gebucht" : "Paket buchen";
-    const buttonStyle = istGebucht ? "background: green; color: white;" : "background: #cc0000; color: white;";
+const buttonStyle = istGebucht
+  ? "background: #28a745; color: white; border-radius: 8px; padding: 8px 14px; font-weight: bold; border: none; cursor: default;"
+  : "background: #cc0000; color: white; border-radius: 8px; padding: 8px 14px; font-weight: bold; border: none; cursor: pointer;";
     const buttonDisabled = istGebucht ? "disabled" : "";
 
     card.innerHTML = `
