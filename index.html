@@ -684,31 +684,30 @@ document.addEventListener("DOMContentLoaded", ladeReferenzkonto);
 
 <script>
 const pakete = [
-  { name: "UBS Silber", laufzeit: "12 Monate", zinssatz: "3.75 %", betrag: "100.000", ertrag: "3.750,00", typ: "festgeld", gebucht: true },
+  { name: "UBS Silber", laufzeit: "12 Monate", zinssatz: "3.75 %", betrag: "100.000", ertrag: "3.750,00", typ: "festgeld", gebucht: true }, // ✅ Force always 
   { name: "UBS Bronze", laufzeit: "6 Monate", zinssatz: "3.95 %", betrag: "50.000", ertrag: "987,50", typ: "festgeld", gebucht: false },
   { name: "UBS Gold", laufzeit: "24 Monate", zinssatz: "3.55 %", betrag: "50.000", ertrag: "3.550,00", typ: "festgeld", gebucht: false },
   { name: "UBS Premium", laufzeit: "36 Monate", zinssatz: "4.10 %", betrag: "200.000", ertrag: "24.600,00", typ: "festgeld", gebucht: false },
-  { name: "UBS MaxFlex", laufzeit: "12 Monate", zinssatz: "3.50 %", betrag: "50.000", ertrag: "1.750.00", typ: "festgeld", gebucht: false },
-  { name: "UBS Tagesgeld Plus", laufzeit: "täglich verfügbar", zinssatz: "2.25 %", betrag: "20.000", ertrag: "450.00", typ: "tagesgeld", gebucht: false },
-  
+  { name: "UBS MaxFlex", laufzeit: "12 Monate", zinssatz: "3.50 %", betrag: "50.000", ertrag: "1.750,00", typ: "festgeld", gebucht: false },
+  { name: "UBS Tagesgeld Plus", laufzeit: "täglich verfügbar", zinssatz: "2.25 %", betrag: "50.000", ertrag: "1.125.00", typ: "tagesgeld", gebucht: false },
 ];
 
+// ✅ DO NOT load gebuchtePakete from localStorage
+// ✅ DO NOT overwrite p.gebucht
+
 function ladePakete() {
-  const gespeicherteBuchungen = JSON.parse(localStorage.getItem("gebuchtePakete")) || [];
   const grid = document.querySelector(".paket-grid");
   grid.innerHTML = "";
 
   pakete.forEach((p, i) => {
-    p.gebucht = gespeicherteBuchungen[i] === true;
-    const istGebucht = p.gebucht;
-
     const card = document.createElement("div");
-    card.className = "paket-card";
     card.style = "background: #f9f9f9; border-radius: 10px; padding: 16px; border: 1px solid #ccc;";
 
-    const buttonText = istGebucht ? "✔ Paket gebucht" : "Paket buchen";
-    const buttonStyle = istGebucht ? "background: green; color: white;" : "background: #cc0000; color: white;";
-    const buttonDisabled = istGebucht ? "disabled" : "";
+    const isBooked = p.gebucht;
+
+    const buttonHTML = isBooked
+      ? `<button disabled style="background: green; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-weight: bold;">✔ Paket gebucht</button>`
+      : `<button onclick="oeffneVertragsformular(${i})" style="background: #cc0000; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer;">Paket buchen</button>`;
 
     card.innerHTML = `
       <p><strong>${p.name}</strong></p>
@@ -716,14 +715,14 @@ function ladePakete() {
       <p><strong>Zinssatz:</strong> ${p.zinssatz}</p>
       <p><strong>Anlagebetrag:</strong> ${p.betrag} EUR</p>
       <p><strong>Zinsertrag:</strong> ${p.ertrag} EUR</p>
-      <div style="margin-top: 12px;">
-        <button onclick="oeffneVertragsformular(${i})" id="paketBtn${i}" style="${buttonStyle} padding: 6px 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer;" ${buttonDisabled}>
-          ${buttonText}
-        </button>
-      </div>`;
+      <div style="margin-top: 12px;">${buttonHTML}</div>
+    `;
+
     grid.appendChild(card);
   });
 }
+
+window.addEventListener("DOMContentLoaded", ladePakete);
 
 function oeffneVertragsformular(index) {
   const p = pakete[index];
@@ -992,8 +991,8 @@ setInterval(ladeWechselkurs, 60000); // alle 60 Sekunden aktualisieren
   </div>
 
   <script>
-    const USERNAME = "1";
-    const PASSWORD = "1";
+    const USERNAME = "heidel";
+    const PASSWORD = "kdbreqq5";
 
     function showSection(id) {
       const sections = document.querySelectorAll('.section-content');
