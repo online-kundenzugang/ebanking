@@ -313,7 +313,7 @@
           <i class="fa-solid fa-file-contract" style="color: red;"></i>
           <strong style="font-size: 16px;">Paketdetails</strong>
         </div>
-        <p><strong>Paket:</strong> Silver</p>
+        <p><strong>Paket:</strong> Individuell</p>
         <p><strong>Anlagebetrag:</strong> EUR 95.000,00</p>
         <p><strong>Laufzeit:</strong> 12 Monate</p> <!-- ✅ manuell anpassbar -->
         <p><strong>Zinssatz:</strong> 3,75 % p.a.</p> <!-- ✅ manuell anpassbar -->
@@ -684,7 +684,7 @@ document.addEventListener("DOMContentLoaded", ladeReferenzkonto);
 
 <script>
 const pakete = [
-  { name: "UBS Silber", laufzeit: "12 Monate", zinssatz: "3.75 %", betrag: "100.000", ertrag: "3.750,00", typ: "festgeld", gebucht: true }, // ✅ Force always 
+  { name: "UBS Silber", laufzeit: "12 Monate", zinssatz: "3.75 %", betrag: "100.000", ertrag: "3.750,00", typ: "festgeld", gebucht: false }, // ✅ Force always 
   { name: "UBS Bronze", laufzeit: "6 Monate", zinssatz: "3.95 %", betrag: "50.000", ertrag: "987,50", typ: "festgeld", gebucht: false },
   { name: "UBS Gold", laufzeit: "24 Monate", zinssatz: "3.55 %", betrag: "50.000", ertrag: "3.550,00", typ: "festgeld", gebucht: false },
   { name: "UBS Premium", laufzeit: "36 Monate", zinssatz: "4.10 %", betrag: "200.000", ertrag: "24.600,00", typ: "festgeld", gebucht: false },
@@ -982,11 +982,11 @@ setInterval(ladeWechselkurs, 60000); // alle 60 Sekunden aktualisieren
     </div>
 
     <div class="footer-nav" id="footer-nav">
-      <div class="footer-item" onclick="showSection('anlagekonto')"><i class="fas fa-piggy-bank"></i><span>Anlagekonto</span></div>
-      <div class="footer-item" onclick="showSection('kontoinhaber')"><i class="fas fa-user"></i><span>Inhaber</span></div>
+      <div class="footer-item" onclick="showSection('anlagekonto')"><i class="fas fa-piggy-bank"></i><span>Konto</span></div>
+      <div class="footer-item" onclick="showSection('kontoinhaber')"><i class="fas fa-user"></i><span>Referenzkonto</span></div>
       <div class="footer-item" onclick="showSection('paket')"><i class="fas fa-box"></i><span>Paket</span></div>
-      <div class="footer-item" onclick="showSection('transaktionen')"><i class="fas fa-history"></i><span>Transaktionen</span></div>
-      <div class="footer-item" onclick="showSection('support')"><i class="fas fa-headset"></i><span>Support</span></div>
+      <div class="footer-item" onclick="showSection('referenzkonto')"><i class="fas fa-box"></i><span>Abwicklungskto</span></div>
+      <div class="footer-item" onclick="showSection('transaktionen')"><i class="fas fa-history"></i><span>Trans</span></div>
     </div>
   </div>
 
